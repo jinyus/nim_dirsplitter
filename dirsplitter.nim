@@ -41,6 +41,9 @@ while true:
   of cmdArgument:
       continue
 
+if not outPrefix.isEmptyOrWhitespace:
+    outPrefix.add('.')
+
 confirmOperation("Splitting \"{dir}\" into {max}GB parts.".fmt)
 
 echo "Splitting Directory\n\n"
@@ -94,9 +97,9 @@ echo "Failed Operations: " & failedOps.intToStr
 
 if currentPart > 0 and showCmd:
     if currentPart == 1:
-        echo fmt"""Tar Command : tar -cf "{outPrefix}.part1.tar" "part1"; done"""
+        echo fmt"""Tar Command : tar -cf "{outPrefix}part1.tar" "part1"; done"""
     else:
-        echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{outPrefix}.part$n.tar" "part$n"; done"""
+        echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{outPrefix}part$n.tar" "part$n"; done"""
 
 
 
