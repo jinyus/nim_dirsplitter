@@ -18,7 +18,8 @@ Usage of dirsplitter:
 ```
 example:
 
-dirsplitter --dir ./mylarge2GBdirectory --max 0.5
+dirsplitter --dir ./mylarge2GBdirectory --max "0.5"
+NB: decimals has to be wrapped in quotes("")
 
 This will yield the following directory structure:
 
