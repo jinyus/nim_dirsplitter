@@ -10,7 +10,7 @@ proc confirmOperation(desc:string)=
     write(stdout, "confirm? (y/n): ")
     var answer =  readLine(stdin)
     if answer != "y" and answer != "n":
-        echo "invalid answer : expected (y or n) got (",answer,")"
+        echo fmt"invalid answer : expected (y or n) got ({answer})" 
         quit(1)
     elif answer != "y":
         echo "Goodbye!"
@@ -42,7 +42,7 @@ while true:
   of cmdArgument:
       continue
 
-confirmOperation("Splitting \"{dir}\" into {max:.3f}GB parts.".fmt)
+confirmOperation("Splitting \"{dir}\" into {max}GB parts.".fmt)
 
 echo "Splitting Directory\n\n"
 
@@ -95,9 +95,9 @@ echo "Failed Operations: " & failedOps.intToStr
 
 if currentPart > 0 and showCmd:
     if currentPart == 1:
-        echo """Tar Command : tar -cf "{outPrefix}.part1.tar" "part1"; done""".fmt
+        echo fmt"""Tar Command : tar -cf "{outPrefix}.part1.tar" "part1"; done"""
     else:
-        echo "Tar Command : for n in {1..", currentPart.intToStr,"}", fmt"""; do tar -cf "{outPrefix}.part$n.tar" "part$n"; done"""
+        echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{outPrefix}.part$n.tar" "part$n"; done"""
 
 
 

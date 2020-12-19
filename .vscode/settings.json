@@ -1,6 +1,8 @@
 {
   "files.exclude": {
     "dist/": "explorerExcludedFiles",
-    ".vscode/": "explorerExcludedFiles"
+    ".vscode/": "explorerExcludedFiles",
+    "*.deps": "explorerExcludedFiles",
+    "*.exe": "explorerExcludedFiles"
   }
 }
