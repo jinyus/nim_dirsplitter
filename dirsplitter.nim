@@ -93,7 +93,6 @@ echo "Done"
 echo "Parts created: " & currentPart.intToStr
 echo "Files moved: " & filesMoved.intToStr
 echo "Failed Operations: " & failedOps.intToStr
-# echo tracker
 
 if currentPart > 0 and showCmd:
     if currentPart == 1:
