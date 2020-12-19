@@ -28,17 +28,16 @@ while true:
   case p.kind
   of cmdEnd: break
   of cmdShortOption, cmdLongOption:
-    if p.key == "dir" or p.key == "d":
-        if not p.val.isEmptyOrWhitespace():
-            dir = p.val
-    elif p.key == "max" or p.key == "m":
-        if not p.val.isEmptyOrWhitespace():
-            discard parseBiggestFloat(p.val,max,0)
-    elif p.key == "show-cmd" or p.key == "s":
+    case p.key:
+    of "dir","d":
+        dir = p.val
+    of "max","m":
+        discard parseBiggestFloat(p.val,max,0)
+    of "show-cmd","s":
         showCmd = true
-    elif p.key == "out-prefix" or p.key == "o":
-        if not p.val.isEmptyOrWhitespace():
-            outPrefix = p.val
+    of "out-prefix","o":
+        outPrefix = p.val
+    else: discard
   of cmdArgument:
       continue
 
