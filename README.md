@@ -5,7 +5,7 @@ How to build:
 -Clone this git repo  
 -cd into directory and run "nim c dirsplitter.nim" to compile
 
-Or download the prebuild binary(windows only) from: https://github.com/jinyus/nim_dirsplitter/releases
+Or download the prebuild binary(windows and linux 64bit only) from: https://github.com/jinyus/nim_dirsplitter/releases
 
 
 
