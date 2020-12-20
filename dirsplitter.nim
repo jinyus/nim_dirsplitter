@@ -94,7 +94,7 @@ if currentPart > 0 and showCmd:
 
 proc confirmOperation(desc:string)= 
     echo desc
-    write(stdout, "confirm? (y/n): ")
+    write(stdout, "continue? (y/n): ")
     var answer =  readLine(stdin).strip.toLower
     case answer:
     of "y","yes":
