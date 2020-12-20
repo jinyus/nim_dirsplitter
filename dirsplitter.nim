@@ -5,16 +5,7 @@ import parseopt
 import parseutils
 import strformat
 
-proc confirmOperation(desc:string)= 
-    echo desc
-    write(stdout, "confirm? (y/n): ")
-    var answer =  readLine(stdin)
-    if answer != "y" and answer != "n":
-        echo fmt"invalid answer : expected (y or n) got ({answer})" 
-        quit(1)
-    elif answer != "y":
-        echo "Goodbye!"
-        quit(0)
+proc confirmOperation(desc:string)
 
 var p = initOptParser(commandLineParams(),shortNoVal = {'s'},longNoVal = @["show-cmd"])
 
@@ -101,6 +92,16 @@ if currentPart > 0 and showCmd:
         echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{outPrefix}part$n.tar" "part$n"; done"""
 
 
-
-
-    
+proc confirmOperation(desc:string)= 
+    echo desc
+    write(stdout, "confirm? (y/n): ")
+    var answer =  readLine(stdin).strip.toLower
+    case answer:
+    of "y","yes":
+        return
+    of "n","no":
+        echo "Goodbye!"
+        quit(0)
+    else:
+        echo fmt"invalid answer : expected (y or n) got ({answer})" 
+        quit(1)
