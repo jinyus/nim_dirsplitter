@@ -124,9 +124,9 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
             echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{prefix}part$n.tar" "part$n"; done"""
 
 proc reverseSplitDir(dir: string) =
-    var partDirsToDelete: seq[string]
     let fullDirPath = os.absolutePath(dir)
 
+    var partDirsToDelete: seq[string]
     proc deleteDirs() =
         for partDir in partDirsToDelete:
             try:
