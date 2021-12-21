@@ -1,6 +1,6 @@
-dist/
+dist/**
 .vscode/
 *.deps
 *.gz
-samples/
+sample/
 dirsplitter
