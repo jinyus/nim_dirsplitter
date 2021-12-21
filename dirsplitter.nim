@@ -129,13 +129,6 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
 
 proc reverseSplitDir(dir: string) =
     var partDirsToDelete: seq[string]
-    proc deleteDirs() =
-        for partDir in partDirsToDelete:
-            try:
-                os.removeDir(partDir)
-            except OSError:
-                echo "failed to delete " & partDir & " " &
-                        getCurrentExceptionMsg()
 
     var shouldDelete = true
 
@@ -160,4 +153,9 @@ proc reverseSplitDir(dir: string) =
                 echo fmt"failed to {pFile} to {dir}: " & getCurrentExceptionMsg()
 
     if shouldDelete:
-        deleteDirs()
+        for partDir in partDirsToDelete:
+            try:
+                os.removeDir(partDir)
+            except OSError:
+                echo "failed to delete " & partDir & " " &
+                        getCurrentExceptionMsg()
