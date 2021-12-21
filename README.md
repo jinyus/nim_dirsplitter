@@ -2,10 +2,14 @@
 Split large directories into parts of a specified maximum size
 
 How to build:  
--Clone this git repo  
--cd into directory and run "nim c dirsplitter.nim" to compile
+- Clone this git repo  
+- Install nim : [https://nim-lang.org/install.html](https://nim-lang.org/install.html)
+- cd into directory and compile with: 
+```
+nim c -d:release dirsplitter.nim
+```
 
-Or download the prebuild binary(windows and linux 64bit only) from: https://github.com/jinyus/nim_dirsplitter/releases
+Or download the prebuild binary(linux 64bit only) from: https://github.com/jinyus/nim_dirsplitter/releases
 
 
 ```text
@@ -32,8 +36,7 @@ Options:
   -h, --help
   -d, --dir=DIR              Target directory (default: .)
   -m, --max=MAX              Max part size in GB (default: 5.0)
-  -p, --prefix=PREFIX        Prefix for output files of the tar command. -show-cmd must be specified. eg: myprefix.part1.tar (default: )
-  -s, --show                 Show tar command to compress each directory
+  -p, --prefix=PREFIX        Prefix for output files of the tar command. eg: myprefix.part1.tar (default: )
  ```
   
 ### example: 
@@ -49,4 +52,9 @@ This will yield the following directory structure:
  |- 📂part4
 
 with each part being a maximum of 500MB in size.
+```
+Undo splitting
+```
+dirsplitter reverse --dir ./mylarge2GBdirectory
+
 ```
