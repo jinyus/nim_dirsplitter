@@ -17,13 +17,15 @@ let p = argparse.newParser:
     command("split"):
         help("Split directories into a specified maximum size")
         option("-d", "--dir", default = some("."), help = "Target directory")
-        option("-m", "--max", default = some("5.0"),
-                help = "Max part size in GB")
-        option("-p", "--prefix", default = some(""),
-                help = "Prefix for output files of the tar command. -show-cmd must be specified. eg: myprefix.part1.tar")
+        option("-m", "--max", default = some("5.0"), help = "Max part size in GB")
+        option(
+            "-p", "--prefix",
+            default = some(""),
+            help = "Prefix for output files of the tar command. -show-cmd must be specified. eg: myprefix.part1.tar"
+            )
         flag("-s", "--show", help = "Show tar command to compress each directory")
         run:
-            let dir = opts.dir.strip()
+            let dir = os.absolutePath(opts.dir.strip())
             var max: BiggestFloat = 5.0
             let result = parseBiggestFloat(opts.max, max, 0)
             if result == 0:
@@ -31,7 +33,7 @@ let p = argparse.newParser:
                 quit(1)
 
             let show = opts.show
-            let outputPrefix = (if opts.prefix.isEmptyOrWhitespace: "" else: opts.prefix & ".")
+            let outputPrefix = (if opts.prefix.isEmptyOrWhitespace(): "" else: opts.prefix & ".")
 
             confirmOperation(fmt "Splitting \"{dir}\" into {max}GB parts.")
 
@@ -50,7 +52,7 @@ let p = argparse.newParser:
         help("Opposite of the main function, moves all files in part folders to the root")
         option("-d", "--dir", default = some("."), help = "Target directory")
         run:
-            let dir = opts.dir.strip()
+            let dir = os.absolutePath(opts.dir.strip())
 
             confirmOperation(fmt "ReverseSplit \"{dir}\" ")
 
@@ -82,6 +84,7 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
     for path in os.walkDirRec(dir):
         let size = os.getFileSize(path)
 
+
         #the filesize is added to the table so decrement is the move op fails
         var decrementIfFailed = false
 
@@ -96,12 +99,13 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
             echo "failed to get filesize : " & getCurrentExceptionMsg()
             continue
 
-        var filename = os.extractFilename(path)
+        var filePath = os.absolutePath(path)
         var partDir = os.joinPath(dir, fmt"part{currentPart}")
-        discard os.existsOrCreateDir(partDir)
+        let dest = filePath.replace(dir, partDir)
 
         try:
-            os.moveFile(path, joinPath(partDir, filename))
+            os.createDir(dest.parentDir)
+            os.moveFile(path, dest)
             inc filesMoved
         except OSError:
             echo "failed to move file : \n" & getCurrentExceptionMsg()
@@ -124,8 +128,6 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
             echo fmt"""Tar Command : for n in {{1..{currentPart}}}; do tar -cf "{prefix}part$n.tar" "part$n"; done"""
 
 proc reverseSplitDir(dir: string) =
-    let fullDirPath = os.absolutePath(dir)
-
     var partDirsToDelete: seq[string]
     proc deleteDirs() =
         for partDir in partDirsToDelete:
@@ -138,20 +140,21 @@ proc reverseSplitDir(dir: string) =
     var shouldDelete = true
 
     for kind, path in os.walkDir(dir):
-        if not (kind == pcDir):
-            continue
+        let isPartDir = kind == pcDir and re.endsWith(path, re"part\d+")
 
-        if not re.endsWith(path, re"part\d+"):
+        if not isPartDir:
             echo "skipping: " & path
             continue
 
-        partDirsToDelete.add(path)
+        let partPath = os.absolutePath(path)
+        partDirsToDelete.add(partPath)
 
-        for pFile in os.walkDirRec(path):
+        for pFile in os.walkDirRec(path, yieldFilter = {pcFile}):
             try:
-                let filename = os.lastPathPart(pFile)
-                let dest = os.joinPath(fullDirPath, filename)
-                os.moveFile(os.absolutePath(pFile), dest)
+                let filePath = os.absolutePath(pFile)
+                let dest = filePath.replace(partPath, dir)
+                os.createDir(dest.parentDir)
+                os.moveFile(filePath, dest)
             except OSError:
                 shouldDelete = false
                 echo fmt"failed to {pFile} to {dir}: " & getCurrentExceptionMsg()
