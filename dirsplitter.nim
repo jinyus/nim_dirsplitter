@@ -8,7 +8,7 @@ import argparse
 import std/re
 import sequtils
 
-proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool)
+proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string)
 proc reverseSplitDir(dir: string)
 
 const GBMultiple = 1024 * 1024 * 1024
@@ -21,9 +21,8 @@ let p = argparse.newParser:
         option(
             "-p", "--prefix",
             default = some(""),
-            help = "Prefix for output files of the tar command. -show-cmd must be specified. eg: myprefix.part1.tar"
+            help = "Prefix for output files of the tar command. eg: myprefix.part1.tar"
             )
-        flag("-s", "--show", help = "Show tar command to compress each directory")
         run:
             let dir = os.absolutePath(opts.dir.strip())
             var max: BiggestFloat = 5.0
@@ -32,7 +31,6 @@ let p = argparse.newParser:
                 echo "Invalid number for max \"{opts.max}\"".fmt
                 quit(1)
 
-            let show = opts.show
             let outputPrefix = (if opts.prefix.isEmptyOrWhitespace(): "" else: opts.prefix & ".")
 
             confirmOperation(fmt "Splitting \"{dir}\" into {max}GB parts.")
@@ -44,8 +42,7 @@ let p = argparse.newParser:
             splitDir(
                 dir,
                 maxFilesize = (max * GBMultiple).toBiggestInt,
-                outputPrefix,
-                show
+                outputPrefix
             )
 
     command("reverse"):
@@ -73,7 +70,7 @@ except UsageError:
     echo p.help
     quit(1)
 
-proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) =
+proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string) =
     echo "\nSplitting Directory...\n\n"
 
     var tracker: Table[int, BiggestInt] = {1: 0.toBiggestInt}.toTable
@@ -121,7 +118,7 @@ proc splitDir(dir: string, maxFilesize: BiggestInt, prefix: string, show: bool) 
     echo fmt"Files moved: {filesMoved}"
     echo fmt"Failed Operations: {failedOps}"
 
-    if currentPart > 0 and show:
+    if currentPart > 0 and not prefix.isEmptyOrWhitespace():
         if currentPart == 1:
             echo fmt"""Tar Command : tar -cf "{prefix}part1.tar" "part1"; done"""
         else:
