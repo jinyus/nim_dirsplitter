@@ -9,7 +9,7 @@ import reverse_split
 
 
 const version = "1.0.0"
-const GBMultiple = 1024 * 1024 * 1024
+const GBMultiple = 1000 * 1000 * 1000
 
 let p = argparse.newParser:
     flag("-v", "--version", help = "Display the app version")
