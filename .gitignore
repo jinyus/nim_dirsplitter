@@ -4,3 +4,6 @@ dist/**
 *.gz
 sample/
 dirsplitter
+pcre/
+pcre-8.42/
+*.nims
