@@ -8,14 +8,15 @@ import split_dir
 import reverse_split
 
 
-const version = "1.0.0"
+const versionProd = "1.0.0"
 const GBMultiple = 1000 * 1000 * 1000
 
 let p = argparse.newParser:
-    flag("-v", "--version", help = "Display the app version")
-    run:
-        echo "Dirsplitter version : {version}".fmt
-        quit(0)
+    command("version"):
+        help("Split directories into a specified maximum size")
+        run:
+            echo "Dirsplitter version : {versionProd}".fmt
+            quit(0)
     command("split"):
         help("Split directories into a specified maximum size")
         option("-d", "--dir", default = some("."), help = "Target directory")
