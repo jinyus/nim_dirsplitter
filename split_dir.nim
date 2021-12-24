@@ -47,9 +47,13 @@ proc splitDir*(dir: string, maxFilesize: BiggestInt, prefix: string) =
     if filesMoved == 0:
         currentPart = 0
 
-    echo fmt"Parts created: {currentPart}"
-    echo fmt"Files moved: {filesMoved}"
+    echo "Results:"
+    echo fmt"Files Moved: {filesMoved}"
     echo fmt"Failed Operations: {failedOps}"
+
+    for k, v in tracker:
+        let mb = v.div((1000000).toBiggestInt)
+        echo fmt"part{k} : {mb}MB"
 
     if currentPart > 0 and not prefix.isEmptyOrWhitespace():
         if currentPart == 1:
