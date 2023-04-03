@@ -29,6 +29,11 @@ let p = argparse.newParser:
             )
         run:
             let dir = os.absolutePath(opts.dir.strip())
+
+            if not os.dirExists(dir):
+                echo "Directory {dir} doesn't exists."
+                quit(1)
+
             var max: BiggestFloat = 5.0
             let result = parseBiggestFloat(opts.max, max, 0)
             if result == 0:
@@ -38,10 +43,6 @@ let p = argparse.newParser:
             let outputPrefix = (if opts.prefix.isEmptyOrWhitespace(): "" else: opts.prefix & ".")
 
             confirmOperation(fmt "Splitting \"{dir}\" into {max}GB parts.")
-
-            if not os.dirExists(dir):
-                echo "Directory {dir} doesn't exists."
-                quit(1)
 
             splitDir(
                 dir,
@@ -55,11 +56,11 @@ let p = argparse.newParser:
         run:
             let dir = os.absolutePath(opts.dir.strip())
 
-            confirmOperation(fmt "ReverseSplit \"{dir}\" ")
-
             if not os.dirExists(dir):
                 echo fmt "Directory \"{dir}\" doesn't exists."
                 quit(1)
+
+            confirmOperation(fmt "ReverseSplit \"{dir}\" ")
 
             reverseSplitDir(dir)
 
