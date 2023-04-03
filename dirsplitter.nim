@@ -13,14 +13,15 @@ const GBMultiple = 1000 * 1000 * 1000
 
 let p = argparse.newParser:
     command("version"):
-        help("Split directories into a specified maximum size")
+        help("Prints the version of the program")
         run:
             echo "Dirsplitter version : {versionProd}".fmt
             quit(0)
     command("split"):
         help("Split directories into a specified maximum size")
         option("-d", "--dir", default = some("."), help = "Target directory")
-        option("-m", "--max", default = some("5.0"), help = "Max part size in GB")
+        option("-m", "--max", default = some("5.0"),
+                help = "Max part size in GB")
         option(
             "-p", "--prefix",
             default = some(""),
