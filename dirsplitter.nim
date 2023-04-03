@@ -64,6 +64,10 @@ let p = argparse.newParser:
 
             reverseSplitDir(dir)
 
+if os.commandLineParams().len == 0:
+    echo p.help
+    quit(0)
+
 try:
     p.run(os.commandLineParams())
 except ShortCircuit as e:
