@@ -8,7 +8,7 @@ import split_dir
 import reverse_split
 
 
-const versionProd = "1.0.0"
+const versionProd = "1.0.1"
 const GBMultiple = 1000 * 1000 * 1000
 
 let p = argparse.newParser:
